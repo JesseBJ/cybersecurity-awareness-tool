@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberCheck — How Safe Are You?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN 1: LANDING
+    ═══════════════════════════════════════════ -->
+    <div id="screenLanding">
+
+        <div class="header">
+            <div class="badge">// Security Assessment</div>
+            <h1>How safe are you<br>from <span>modern scams?</span></h1>
+            <p>15 real-world scenarios. Find out exactly where you're exposed.</p>
+            <p class="sub-note">Your answers are not stored or shared.</p>
+        </div>
+
+        <div class="landing-card">
+            <div class="stat-row">
+                <div class="stat">
+                    <div class="stat-num">15</div>
+                    <div class="stat-label">Scenarios</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <div class="stat-num">~3</div>
+                    <div class="stat-label">Minutes</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">Risk Levels</div>
+                </div>
+            </div>
+
+            <ul class="checklist">
+                <li><span class="check">✓</span> Social media, WhatsApp &amp; SMS scams</li>
+                <li><span class="check">✓</span> Banking, investment &amp; job fraud</li>
+                <li><span class="check">✓</span> AI deepfakes &amp; voice cloning</li>
+                <li><span class="check">✓</span> Device security &amp; password habits</li>
+                <li><span class="check">✓</span> Personalised feedback with safe practices</li>
+            </ul>
+
+            <button class="btn-start" onclick="showQuiz()">Start Assessment →</button>
+        </div>
+
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN 2: QUIZ
+    ═══════════════════════════════════════════ -->
+    <div id="screenQuiz" style="display:none;">
+
+        <div class="quiz-topbar">
+            <button class="back-link" onclick="showLanding()">← Exit</button>
+            <div class="progress-meta">
+                <span id="progressLabel">QUESTION 1 OF {{ questions|length }}</span>
+                <span id="progressPct" class="pct-accent">0%</span>
+            </div>
+        </div>
+
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="quiz-stage" id="quizStage">
+            {% for q in questions %}
+            <div class="q-card {% if loop.first %}active{% endif %}"
+                 data-id="{{ q.id }}"
+                 data-index="{{ loop.index0 }}">
+
+                <div class="q-number">QUESTION {{ loop.index }} / {{ questions|length }}</div>
+                <div class="q-text">{{ q.question }}</div>
+
+                <div class="options">
+                    <button class="option-btn" data-value="Yes"
+                            onclick="selectAnswer(this, '{{ q.id }}', 'Yes')">Yes</button>
+                    <button class="option-btn" data-value="No"
+                            onclick="selectAnswer(this, '{{ q.id }}', 'No')">No</button>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="nav-row">
+            <button class="nav-btn btn-prev" id="btnPrev" onclick="navigate(-1)" disabled>← Back</button>
+            <span class="skip-note" id="skipNote">Select an answer to continue</span>
+            <button class="nav-btn btn-next" id="btnNext" onclick="navigate(1)" disabled>Next →</button>
+            <button class="nav-btn btn-submit" id="btnSubmit" onclick="submitQuiz()" style="display:none;">See My Results →</button>
+        </div>
+
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN 3: LOADING
+    ═══════════════════════════════════════════ -->
+    <div id="screenLoading" style="display:none;">
+        <div class="loading-wrap">
+            <div class="spinner"></div>
+            <p class="loading-text">ANALYSING RESPONSES...</p>
+        </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN 4: RESULTS (populated by JS)
+    ═══════════════════════════════════════════ -->
+    <div id="screenResult" style="display:none;"></div>
+
+</div>
+
+<script>
+    // Pass Jinja data to script.js
+    const TOTAL = {{ questions|length }};
+</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
